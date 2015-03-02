@@ -1,4 +1,6 @@
 ###
 title: John
 ###
-Hello world {{ document.title }}
+{% extends "base.nunjucks" %}
+
+{% block content %}Hello world {{ document.title }}{% endblock %}

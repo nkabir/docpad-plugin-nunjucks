@@ -10,22 +10,19 @@ module.exports = (BasePlugin) ->
 
 		constructor: ->
 			super
-			roots = @docpad.config.layoutPaths
 			nunjucksLib = require 'nunjucks'
-
-			NonWatchingLoader = new nunjucksLib.FileSystemLoader roots, false
-			@Nunjucks = new nunjucksLib.Environment NonWatchingLoader
+			NonWatchingLoader = new nunjucksLib.FileSystemLoader @docpad.config.layoutsPaths, false
+			@engine = new nunjucksLib.Environment NonWatchingLoader
 			
 		# Render
 		# Called per document, for each extension conversion. 
 		# Used to render one extension to another.
 		render: (options, next) ->
 			# Prepare
-			{inExtension, outExtension, content, templateData} = options
+			{inExtension, outExtension, content, file, templateData} = options
+			# filename = file.get('relative')
 
 			if inExtension is 'nunjucks'
-				@Nunjucks.renderString content, templateData, (err, result)->
-					options.content = result
+				@engine.renderString content, templateData, (err, res)->
+					options.content = res
 					next()
-			else
-				next()
