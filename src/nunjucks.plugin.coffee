@@ -3,7 +3,7 @@ path = require 'path'
 # Export Plugin
 module.exports = (BasePlugin) ->
 
-	class NunjucksPlugin extends BasePlugin
+	class nunjucks extends BasePlugin
 
 		name: 'nunjucks'
 		nunjucks: null
@@ -13,18 +13,19 @@ module.exports = (BasePlugin) ->
 			roots = @docpad.config.layoutPaths
 			nunjucksLib = require 'nunjucks'
 
-			NonWatchingLoader = new Nunjucks.FileSystemLoader roots, false
-			@Nunjucks = new nunjucks.Environment NonWatchingLoader
+			NonWatchingLoader = new nunjucksLib.FileSystemLoader roots, false
+			@Nunjucks = new nunjucksLib.Environment NonWatchingLoader
 			
 		# Render
-		# Called per document, for each extension conversion. Used to render one extension to another.
-		render: (opts, next) ->
+		# Called per document, for each extension conversion. 
+		# Used to render one extension to another.
+		render: (options, next) ->
 			# Prepare
-			{inExtension, outExtension, content, templateData} = opts
+			{inExtension, outExtension, content, templateData} = options
 
 			if inExtension is 'nunjucks'
-				opts.content = @Nunjucks.renderString content, templateData, next
-
+				@Nunjucks.renderString content, templateData, (err, result)->
+					options.content = result
+					next()
 			else
-				return next()
-
+				next()
