@@ -1,0 +1,34 @@
+{
+  "name": "docpad-plugin-nunjucks",
+  "version": "2.0.0",
+  "description": "DocPad plugin that adds the ability to render nunjucks to Something Else",
+  "homepage": "https://github.com/airtonix/docpad-plugin-nunjucks",
+  "license": {
+    "type": "MIT"
+  },
+  "keywords": [
+    "docpad",
+    "docpad-plugin",
+    "nunjucks"
+  ],
+  "engines": {
+    "node": ">=0.8"
+  },
+  "peerDependencies": {
+    "docpad": "6"
+  },
+  "dependencies": {
+    "nunjucks": "^1.2.0"
+  },
+  "devDependencies": {
+    "docpad": "6",
+    "coffee-script": "^1.9.1"
+  },
+  "main": "./out/nunjucks.plugin.js",
+  "scripts": {
+    "test": "node ./out/nunjucks.test.js"
+  },
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
+}
