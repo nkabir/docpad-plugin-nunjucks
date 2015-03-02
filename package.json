@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-nunjucks",
-  "version": "2.0.1",
+  "version": "2.0.4",
   "description": "DocPad plugin that adds the ability to render nunjucks to Something Else",
   "homepage": "https://github.com/airtonix/docpad-plugin-nunjucks",
   "license": {
