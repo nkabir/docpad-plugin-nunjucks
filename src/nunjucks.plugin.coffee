@@ -1,4 +1,6 @@
 path = require 'path'
+includeAll = require 'include-all'
+require 'coffee-script/register'
 
 # Export Plugin
 module.exports = (BasePlugin) ->
@@ -8,12 +10,34 @@ module.exports = (BasePlugin) ->
 		name: 'nunjucks'
 		nunjucks: null
 
+		config:
+			tags: "tags"
+			filters: "filters"
+
 		constructor: ->
 			super
 			nunjucksLib = require 'nunjucks'
 			NonWatchingLoader = new nunjucksLib.FileSystemLoader @docpad.config.layoutsPaths, false
 			@engine = new nunjucksLib.Environment NonWatchingLoader
-			
+
+			@config.tags = path.join(@docpad.config.rootPath, @config.tags)
+			@config.filters = path.join(@docpad.config.rootPath, @config.filters)
+
+			custom = 
+				tags: includeAll({
+					dirname: @config.tags,
+					filter: /(.+)\.coffee$/,
+					optional: true
+				})
+				filters: includeAll({
+					dirname: @config.filters,
+					filter: /(.+)\.coffee$/
+				})
+
+			@engine.addFilter(name, tag) for name, filter in custom.filters
+			@engine.addFilter(name, tag) for name, tag in custom.tags
+
+
 		# Render
 		# Called per document, for each extension conversion. 
 		# Used to render one extension to another.
