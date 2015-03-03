@@ -19,24 +19,28 @@ module.exports = (BasePlugin) ->
 			nunjucksLib = require 'nunjucks'
 			NonWatchingLoader = new nunjucksLib.FileSystemLoader @docpad.config.layoutsPaths, false
 			@engine = new nunjucksLib.Environment NonWatchingLoader
-
+			
 			@config.tags = path.join(@docpad.config.rootPath, @config.tags)
 			@config.filters = path.join(@docpad.config.rootPath, @config.filters)
 
-			custom = 
-				tags: includeAll({
-					dirname: @config.tags,
-					filter: /(.+)\.coffee$/,
-					optional: true
-				})
-				filters: includeAll({
-					dirname: @config.filters,
-					filter: /(.+)\.coffee$/
-				})
+			@addTag(name, tagFn) for name, tagFn in includeAll({
+				dirname: @config.tags,
+				filter: /(.+)\.coffee$/,
+				optional: true
+			})
+			@addFilter(name, filterFn) for name, filterFn in includeAll({
+				dirname: @config.filters,
+				filter: /(.+)\.coffee$/,
+				optional: true
+			})
 
-			@engine.addFilter(name, tag) for name, filter in custom.filters
-			@engine.addFilter(name, tag) for name, tag in custom.tags
+		addTag: (name, tagFn)->
+			console.log "Adding custom tag: #{name}"
+			@engine.addTag name, tagFn
 
+		addFilter: (name, filterFn)->
+			console.log "Adding custom filter: #{name}"
+			@engine.addFilter name, filterFn
 
 		# Render
 		# Called per document, for each extension conversion. 
