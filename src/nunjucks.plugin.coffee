@@ -45,12 +45,14 @@ module.exports = (BasePlugin) ->
 		# Render
 		# Called per document, for each extension conversion. 
 		# Used to render one extension to another.
-		render: (options, next) ->
+		render: (options) ->
 			# Prepare
-			{inExtension, outExtension, content, file, templateData} = options
-			# filename = file.get('relative')
+			{inExtension, content, templateData} = options
 
 			if inExtension is 'nunjucks'
-				@engine.renderString content, templateData, (err, res)->
-					options.content = res
-					next()
+				try
+					options.content = @engine.renderString content, templateData
+				catch err
+					return err
+
+			return true

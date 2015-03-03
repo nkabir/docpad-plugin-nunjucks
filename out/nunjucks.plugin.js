@@ -25,45 +25,55 @@
       };
 
       function nunjucks() {
-        var NonWatchingLoader, custom, filter, i, j, len, len1, name, nunjucksLib, ref, ref1, tag;
+        var NonWatchingLoader, filterFn, i, j, len, len1, name, nunjucksLib, ref, ref1, tagFn;
         nunjucks.__super__.constructor.apply(this, arguments);
         nunjucksLib = require('nunjucks');
         NonWatchingLoader = new nunjucksLib.FileSystemLoader(this.docpad.config.layoutsPaths, false);
         this.engine = new nunjucksLib.Environment(NonWatchingLoader);
         this.config.tags = path.join(this.docpad.config.rootPath, this.config.tags);
         this.config.filters = path.join(this.docpad.config.rootPath, this.config.filters);
-        custom = {
-          tags: includeAll({
-            dirname: this.config.tags,
-            filter: /(.+)\.coffee$/,
-            optional: true
-          }),
-          filters: includeAll({
-            dirname: this.config.filters,
-            filter: /(.+)\.coffee$/
-          })
-        };
-        ref = custom.filters;
-        for (filter = i = 0, len = ref.length; i < len; filter = ++i) {
-          name = ref[filter];
-          this.engine.addFilter(name, tag);
+        ref = includeAll({
+          dirname: this.config.tags,
+          filter: /(.+)\.coffee$/,
+          optional: true
+        });
+        for (tagFn = i = 0, len = ref.length; i < len; tagFn = ++i) {
+          name = ref[tagFn];
+          this.addTag(name, tagFn);
         }
-        ref1 = custom.tags;
-        for (tag = j = 0, len1 = ref1.length; j < len1; tag = ++j) {
-          name = ref1[tag];
-          this.engine.addFilter(name, tag);
+        ref1 = includeAll({
+          dirname: this.config.filters,
+          filter: /(.+)\.coffee$/,
+          optional: true
+        });
+        for (filterFn = j = 0, len1 = ref1.length; j < len1; filterFn = ++j) {
+          name = ref1[filterFn];
+          this.addFilter(name, filterFn);
         }
       }
 
-      nunjucks.prototype.render = function(options, next) {
-        var content, file, inExtension, outExtension, templateData;
-        inExtension = options.inExtension, outExtension = options.outExtension, content = options.content, file = options.file, templateData = options.templateData;
+      nunjucks.prototype.addTag = function(name, tagFn) {
+        console.log("Adding custom tag: " + name);
+        return this.engine.addTag(name, tagFn);
+      };
+
+      nunjucks.prototype.addFilter = function(name, filterFn) {
+        console.log("Adding custom filter: " + name);
+        return this.engine.addFilter(name, filterFn);
+      };
+
+      nunjucks.prototype.render = function(options) {
+        var content, err, inExtension, templateData;
+        inExtension = options.inExtension, content = options.content, templateData = options.templateData;
         if (inExtension === 'nunjucks') {
-          return this.engine.renderString(content, templateData, function(err, res) {
-            options.content = res;
-            return next();
-          });
+          try {
+            options.content = this.engine.renderString(content, templateData);
+          } catch (_error) {
+            err = _error;
+            return err;
+          }
         }
+        return true;
       };
 
       return nunjucks;

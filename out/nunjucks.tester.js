@@ -12,6 +12,13 @@
         return NunjucksTester.__super__.constructor.apply(this, arguments);
       }
 
+      NunjucksTester.prototype.docpadConfig = {
+        logLevel: 5,
+        enabledPlugins: {
+          nunjucks: true
+        }
+      };
+
       return NunjucksTester;
 
     })(testers.RendererTester);
