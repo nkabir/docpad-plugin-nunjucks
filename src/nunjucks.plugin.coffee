@@ -1,3 +1,4 @@
+fs = require 'fs'
 path = require 'path'
 includeAll = require 'include-all'
 require 'coffee-script/register'
@@ -10,9 +11,10 @@ module.exports = (BasePlugin) ->
 		name: 'nunjucks'
 		nunjucks: null
 
+		# no custom tags or filters by default
 		config:
-			tags: "tags"
-			filters: "filters"
+			tags: false
+			filters: false
 
 		constructor: ->
 			super
@@ -20,26 +22,35 @@ module.exports = (BasePlugin) ->
 			NonWatchingLoader = new nunjucksLib.FileSystemLoader @docpad.config.layoutsPaths, false
 			@engine = new nunjucksLib.Environment NonWatchingLoader
 			
-			@config.tags = path.join(@docpad.config.rootPath, @config.tags)
-			@config.filters = path.join(@docpad.config.rootPath, @config.filters)
+			for name, value of @config
+				if value
+					newValue = path.join(@docpad.config.srcPath, value)
+					@config[name] = newValue
 
-			@addTag(name, tagFn) for name, tagFn in includeAll({
-				dirname: @config.tags,
-				filter: /(.+)\.coffee$/,
-				optional: true
-			})
-			@addFilter(name, filterFn) for name, filterFn in includeAll({
-				dirname: @config.filters,
-				filter: /(.+)\.coffee$/,
-				optional: true
-			})
+			if @config.tags
+				tagsStat = fs.lstatSync @config.tags
+				if tagsStat.isDirectory()
+					@addTag(name, tagFn) for name, tagFn in includeAll({
+						dirname: @config.tags
+						filter: /(.+)\.[js|coffee|litcoffee]+$/
+						optional: true
+					})
+
+			if @config.filters
+				filtersStat = fs.lstatSync(@config.filters)
+				if filtersStat.isDirectory()
+					@addFilter(name, filterFn) for name, filterFn in includeAll({
+						dirname: @config.filters
+						filter: /(.+)\.[js|coffee|litcoffee]+$/
+						optional: true
+					})
 
 		addTag: (name, tagFn)->
-			console.log "Adding custom tag: #{name}"
+			console.info "Adding custom tag: #{name}"
 			@engine.addTag name, tagFn
 
 		addFilter: (name, filterFn)->
-			console.log "Adding custom filter: #{name}"
+			console.info "Adding custom filter: #{name}"
 			@engine.addFilter name, filterFn
 
 		# Render

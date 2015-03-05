@@ -16,6 +16,11 @@
         logLevel: 5,
         enabledPlugins: {
           nunjucks: true
+        },
+        plugins: {
+          nunjucks: {
+            filters: 'api/filters'
+          }
         }
       };
 
