@@ -58,7 +58,9 @@ module.exports = (BasePlugin) ->
 		# Used to render one extension to another.
 		render: (options) ->
 			# Prepare
-			{inExtension, content, templateData} = options
+			{inExtension, outExtension, content, templateData} = options
+
+			console.log inExtension, outExtension
 
 			if inExtension is 'nunjucks'
 				try
