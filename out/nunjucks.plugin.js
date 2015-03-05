@@ -81,8 +81,9 @@
       };
 
       nunjucks.prototype.render = function(options) {
-        var content, err, inExtension, templateData;
-        inExtension = options.inExtension, content = options.content, templateData = options.templateData;
+        var content, err, inExtension, outExtension, templateData;
+        inExtension = options.inExtension, outExtension = options.outExtension, content = options.content, templateData = options.templateData;
+        console.log(inExtension, outExtension);
         if (inExtension === 'nunjucks') {
           try {
             options.content = this.engine.renderString(content, templateData);
