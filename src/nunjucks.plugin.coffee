@@ -19,6 +19,7 @@ module.exports = (BasePlugin) ->
 		constructor: ->
 			super
 			nunjucksLib = require 'nunjucks'
+			nunjucksLib.installJinjaCompat()
 			NonWatchingLoader = new nunjucksLib.FileSystemLoader @docpad.config.layoutsPaths, false
 			@engine = new nunjucksLib.Environment NonWatchingLoader
 			
