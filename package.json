@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "include-all": "^0.1.6",
-    "nunjucks": "^1.2.0"
+    "nunjucks": "^3.0.0"
   },
   "devDependencies": {
     "docpad": "6",
