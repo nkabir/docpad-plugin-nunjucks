@@ -85,7 +85,7 @@
         var content, err, inExtension, outExtension, templateData;
         inExtension = options.inExtension, outExtension = options.outExtension, content = options.content, templateData = options.templateData;
         console.log(inExtension, outExtension);
-        if (inExtension === 'nunjucks') {
+        if (inExtension === 'nunjucks' || inExtension === 'njk') {
           try {
             options.content = this.engine.renderString(content, templateData);
           } catch (error) {

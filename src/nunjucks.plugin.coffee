@@ -63,7 +63,7 @@ module.exports = (BasePlugin) ->
 
 			console.log inExtension, outExtension
 
-			if inExtension is 'nunjucks'
+			if inExtension in ['nunjucks','njk']
 				try
 					options.content = @engine.renderString content, templateData
 				catch err
