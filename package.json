@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "docpad": "6",
-    "coffee-script": "^1.9.1"
+    "coffee-script": "^1.12.4"
   },
   "main": "./out/nunjucks.plugin.js",
   "scripts": {
